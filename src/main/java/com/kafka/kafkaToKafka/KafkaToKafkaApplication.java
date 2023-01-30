@@ -1,25 +1,40 @@
+/*
+ * Copyright (c) NeST Digital Pvt Ltd, 2023.
+ * All Rights Reserved. Confidential.
+ */
 package com.kafka.kafkaToKafka;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.StreamsConfig;
+
+import com.kafka.kafkaToKafka.kstream.KstreamToKstream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
-import java.util.Properties;
+/**
+
+ * File: KafkaToKafkaApplication.java
+
+ * This is the main class of the Kafka To Kafka application.
+ * It is responsible for initializing the Spring Boot application.
+ * and starting the kstream processing.
+
+ * @author Abhinand Manohar OP
+ * @date January 25, 2023
+
+ */
 @SpringBootApplication
 public class KafkaToKafkaApplication {
+
+	@Autowired
+	private KstreamToKstream kstream;
+
 	public static void main(String[] args) {
-		Properties config = new Properties();
-		config.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-streams-demo");
-		config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-		config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
-		StreamsBuilder builder = new StreamsBuilder();
-		builder.stream("input-topic").to("output-topic");
-		KafkaStreams streams = new KafkaStreams(builder.build(), config);
-		streams.start();
-		SpringApplication.run(KafkaToKafkaApplication.class, args);
+		ApplicationContext context = SpringApplication.run(KafkaToKafkaApplication.class, args);
+		KafkaToKafkaApplication kafkaToKafkaApplication = context.getBean(KafkaToKafkaApplication.class);
+		kafkaToKafkaApplication.run();
+	}
+	public void run() {
+		kstream.process();
 	}
 }
 
